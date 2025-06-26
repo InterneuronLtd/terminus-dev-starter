@@ -1,0 +1,149 @@
+<!--BEGIN LICENSE BLOCK--> 
+<!--Interneuron Terminus
+
+Copyright(C) 2025  Interneuron Limited
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.If not, see<http://www.gnu.org/licenses/>. -->
+<!--END LICENSE BLOCK--> 
+<div *ngIf="person.fullname != null">
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="border rounded border-secondary" style="padding:7px; min-height:120px;">
+        <h5 class="text-secondary">Main Component <small> (Waits for emit signal from Terminus or fake-data-contract
+            and then loads person via HTTP and sends emit signal to child component)</small></h5>
+        <div class="row" *ngIf="person.fullname != null">
+          <div class="col-md-7">
+            <div class="h3">
+              <h1>{{ person.fullname }}</h1>
+              <fa *ngIf="person.gendertext=='Female'" name="female"></fa>
+              <fa *ngIf="person.gendertext=='Male'" name="male"></fa>
+              {{ person.gendertext }}
+              <span *ngIf="!personVerified" class="text-danger">
+                <fa name="times"></fa>
+              </span>
+              <span *ngIf="personVerified" class="text-success">
+                <fa name="check"></fa>
+              </span>
+              &nbsp;
+              <button *ngIf="!personVerified" type="button" class="btn btn-success btn-sm"
+                (click)="openConfirmModal(verifyModaltemplate)">Verify</button>
+              <button *ngIf="personVerified" type="button" class="btn btn-danger btn-sm"
+                (click)="openConfirmModal(unverifyModaltemplate)">Unverify</button>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <span style="font-size: 5em; padding-right: 20px;" class="float-right">
+              <fa name="barcode"></fa>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br />
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="border rounded border-secondary" style="padding:7px; min-height:120px;">
+        <h5 class="text-secondary">Child Component <small> (Waits for emit signal from main
+            component and then loads patient identifiers via HTTP)</small>
+        </h5>
+
+
+        <app-person-identifiers [person]="person" (personChange)="update()"></app-person-identifiers>
+      </div>
+
+      <ngx-spinner name="spinner3" bdColor="rgba(0, 0, 0, 0.9)" [fullScreen]="false" type="ball-spin-clockwise"
+        size="medium">
+      </ngx-spinner>
+    </div>
+  </div>
+
+  <br />
+
+  <div class="border rounded border-secondary" style="padding:7px; min-height:120px;">
+    <h5 class="text-secondary">RBAC Test</h5>
+
+
+    <table class="table table-bordered">
+      <tr class="table-success" *ngIf="appService.authoriseAction('add observations')">
+        <td>
+          You have access to add observations
+        </td>
+      </tr>
+      <tr class="table-danger" *ngIf="!appService.authoriseAction('add observations')">
+        <td>
+          You don't have access to add observations
+        </td>
+      </tr>
+      <tr class="table-success" *ngIf="appService.authoriseAction('rule the worrld')">
+        <td>
+          You have access to rule the world!
+        </td>
+      </tr>
+      <tr class="table-danger" *ngIf="!appService.authoriseAction('rule the world')">
+        <td>
+          You don't have access to rule the world
+        </td>
+      </tr>
+    </table>
+
+
+    <ngx-spinner name="spinner1" bdColor="rgba(0, 0, 0, 0.9)" [fullScreen]="false" type="ball-spin-clockwise"
+      size="medium">
+      <p style="color: white"> Loading... </p>
+    </ngx-spinner>
+
+
+    <div>
+      <ng-template #verifyModaltemplate>
+        <div class="modal-header bg-success text-white">
+          <h3>Verify Person</h3>
+        </div>
+        <div class="modal-body">
+          <h5>
+            Are you sure you want verify this person?
+          </h5>
+          <i><small>(This is not persisted)</small></i>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+          <button type="button" class="btn btn-success" (click)="verify()">Verify</button>
+        </div>
+      </ng-template>
+    </div>
+
+
+    <div>
+      <ng-template #unverifyModaltemplate>
+        <div class="modal-header bg-danger text-white">
+          <h3>Unverify Person</h3>
+        </div>
+        <div class="modal-body">
+          <h5>
+            Are you sure you want verify this person?
+          </h5>
+          <i><small>(This is not persisted)</small></i>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+          <button type="button" class="btn btn-danger" (click)="unverify()">Unverify</button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

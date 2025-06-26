@@ -1,0 +1,7 @@
+{
+    "uris": {
+      "baseuri": "https://synapsedynamicapi.azurewebsites.net"
+    },
+    "enablelogging": true,
+    "prodbuild": true
+ }
